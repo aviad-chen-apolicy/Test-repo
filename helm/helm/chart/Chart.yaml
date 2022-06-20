@@ -1,5 +1,5 @@
 apiVersion: v1
 appVersion: "1.1"
-description: Multipurpose tester-backend for EKS and PKS
+description: Multipurpose tester-backend for EKS and PKS1
 name: cc-tester-backend
 version: 0.0.1
