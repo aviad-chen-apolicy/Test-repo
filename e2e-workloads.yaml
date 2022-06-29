@@ -2,6 +2,7 @@ apiVersion: v1
 kind: Namespace
 metadata:
   name: e2e
+
 ---
 apiVersion: v1
 kind: Namespace
@@ -48,47 +49,47 @@ spec:
       hostPID: true
       hostNetwork: true
       volumes:
-        - name: risky-volume
-          hostPath:
-            path: /var/run/docker.sock
+      - name: risky-volume
+        hostPath:
+          path: /var/run/docker.sock
       serviceAccountName: default
       securityContext:
         runAsNonRoot: false
         runAsGroup: 0
       containers:
-        - name: risky-redis-container
-          securityContext:
-            capabilities:
-              add:
-                - SYS_ADMIN
-                - NET_ADMIN
-                - NET_RAW
-            runAsNonRoot: false
-            runAsGroup: 0
-            allowPrivilegeEscalation: true
-            readOnlyRootFilesystem: false
-            privileged: true
-          image: redis:latest
-          imagePullPolicy: Never
-          volumeMounts:
-            - name: risky-volume
-              mountPath: /mnt/risky
-              readOnly: false
-          ports:
-            - containerPort: 6379
-              name: redis
-              protocol: TCP
-              hostPort: 6379
-          env:
-            - name: MY_DB_PW
-              valueFrom:
-                secretKeyRef:
-                  name: risky-secret
-                  key: PASSWORD
-          envFrom:
-            - secretRef:
-                name: risky-secret
-
+      - name: risky-redis-container
+        securityContext:
+          capabilities:
+            add:
+            - SYS_ADMIN
+            - NET_ADMIN
+            drop:
+            - NET_RAW
+          runAsNonRoot: false
+          runAsGroup: 0
+          allowPrivilegeEscalation: true
+          readOnlyRootFilesystem: false
+          privileged: true
+        image: redis:latest
+        imagePullPolicy: Never
+        volumeMounts:
+        - name: risky-volume
+          mountPath: /mnt/risky
+          readOnly: false
+        ports:
+        - containerPort: 6379
+          name: redis
+          protocol: TCP
+          hostPort: 6379
+        env:
+        - name: MY_DB_PW
+          valueFrom:
+            secretKeyRef:
+              name: risky-secret
+              key: PASSWORD
+        envFrom:
+        - secretRef:
+            name: risky-secret
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -157,9 +158,7 @@ spec:
             - containerPort: 6379
               name: redis
               protocol: TCP
-
 ---
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -187,7 +186,6 @@ spec:
               value: DEVELOPMENT
             - name: DB_HOST
               value: jenkins.test
-
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -209,7 +207,6 @@ spec:
       containers:
         - name : ubuntu-container
           image: ubuntu/trusty
-
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -252,7 +249,6 @@ spec:
       containers:
         - name : orientdb-container
           image: orientdb
-
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -274,7 +270,6 @@ spec:
       containers:
         - name : kubectl-container
           image: d3fk/kubectl
-
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -296,7 +291,6 @@ spec:
       containers:
         - name : node-container
           image: node:latest
-
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -318,7 +312,6 @@ spec:
       containers:
         - name : mariadb-container
           image: mariadb:latest   
-
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -341,9 +334,7 @@ spec:
       containers:
         - name : alpine-container
           image: alpine:latest        
-
 ---
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -364,7 +355,6 @@ spec:
       containers:
         - name : nginx-container
           image: nginx:latest  
-
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -386,7 +376,6 @@ spec:
       containers:
         - name : rabbitmq-container
           image: rabbitmq:latest  
-
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -450,7 +439,6 @@ spec:
       containers:
         - name : logstash-container
           image: logstash:latest    
-
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -472,4 +460,3 @@ spec:
       containers:
         - name : tomcat-container
           image: tomcat:latest
-
